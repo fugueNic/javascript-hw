@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hangman: The Game</title>
+
+  <!-- Bootstrap File -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+</head>
+
+<!-- CSS Styles (These styles are provided to you. Don't touch these!) -->
+<style>
+ 
+
+  .letter {
+    width: 30px;
+    height: 30px;
+    border-style: solid;
+    padding: 2px;
+    float: left;
+    margin: 2px;
+  }
+
+  .letter-button-color {
+    color: darkcyan;
+  }
+
+  .fridge-color {
+    color: orange;
+  }
+
+  #display {
+    align-content: center;
+    margin-top: 78px;
+    width: 220px;
+    margin-left: 60px;
+  }
+
+  #buttons {
+    padding-top: 60px;
+  }
+
+  #clear {
+    margin-left: 20px;
+    font-size: 25px;
+    color: black;
+    border-style: solid;
+    width: 100px;
+  }
+</style>
+
+<body>
+  <!-- Overall Bootstrap Grid -->
+  <div class="container">
+      
+          <!-- Jumbotron with Title -->
+          <div class="jumbotron">
+            <h1 id="title" class="text-center"><strong>Who's that Pokemon?</strong></h1>
+            <h4 class="text-center">Poke Style</h4>
+            <hr>
+            <div class="text-center">
+              <button class="btn btn-warning btn-xs theme-button"><span class="glyphicon glyphicon-music"></span> Get Started!</button>
+              <button class="btn btn-default btn-xs pause-button"><span class="glyphicon glyphicon-pause"></span> Pause Song</button>
+            </div>
+      
+          </div>
+          <div class="row">
+      
+            <!-- Left Panel -->
+            <div class="col-lg-6">
+      
+              <!-- Number of Wins -->
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Wins</h3>
+                </div>
+                <div class="panel-body">
+                  <div id="wins" class="text-center">
+                     0
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Word to Guess -->
+              <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Word to Guess</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div id="mysteryword" class="text-center">
+                       ???????
+                    </div>
+                  </div>
+                </div>
+
+              <!-- Number of Guesses -->
+              <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Number of Guesses Left</h3>
+                  </div>
+                  <div class="panel-body">
+                    <div id="guesses" class="text-center">
+                       15
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <!-- Right Panel Letters Guessed -->
+            <div class="col-lg-6">
+      
+              <!-- Fridge Image -->
+              
+              <img src="Assets/pikachu.png" alt="" id="pokemon" style="position:absolute; top:50px; left: 80px; z-index: -20">
+            </div>
+          </div>
+        </div>
+      
+  <div id="display"></div>
+  <div id="buttons"></div>
+  <button id="clear">clear</button>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      var guessesLeft = 15;
+      var wins = 0;
+      var letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+      var wordbank = [
+        "bulbasaur",
+        "charmander",
+        "squirtle",
+        "caterpie",
+        "metapod",
+        "butterfree",
+        "weedle",
+        "pidgey",
+        "rattata",
+        "spearow",
+        "ekans",
+        "pikachu"
+      ];
+      var activeGuess = [];
+      var audioElement = document.createElement("audio");
+      audioElement.setAttribute("src", "Assets/whosthatpokemon.mp3");
+
+      // Theme Button
+      $(".theme-button").on("click", function() {
+        audioElement.play();
+        wins = 0;
+        wordIndex = Math.floor((Math.random() * wordbank.length()) + 0);
+        wordArray = wordbank[wordIndex].split('');
+        activeGuess = [];
+        var imgSrc = 'Assets/';
+        imgSrc += wordbank[wordIndex];
+        imgSrc += '.png';
+        $("#pokemon").attr('src', imgSrc);
+      });
+
+      $(".pause-button").on("click", function() {
+        audioElement.pause();
+      });
+
+      // MAJOR TASK #1: DYNAMICALLY CREATE BUTTONS
+      // =================================================================================
+
+      // 1. Create a for-loop to iterate through the letters array.
+
+      for (letter of letters) { 
+        var LetterBtn = $("<button>");
+        LetterBtn.addClass("letter-button");
+        LetterBtn.addClass("letter");
+        LetterBtn.addClass("letter-button-color");
+        LetterBtn.data("data-letter", letter);
+        LetterBtn.text(letter);
+        $("#buttons").append(LetterBtn);
+      }
+      
+      $(".letter-button").on("click", function() {
+        var fridgeMagnet = $("<div>");
+        fridgeMagnet.addClass("letter");
+        fridgeMagnet.addClass("fridge-color");
+        fridgeMagnet.text($(this).attr("data-letter"));
+        if (guessesLeft >= 1) {
+            guessesLeft--;
+            $("#guesses").text(guessesLeft);
+        }
+        else {
+            alert("YOU LOSE SIR, GOODDAY!");
+            location.reload();
+        }
+        if (wordbank[wordIndex].includes(fridgeMagnet.text)) {
+            activeGuess.push(fridgeMagnet.text);
+            if (activeGuess == wordArray) {
+                alert("YOU WIN!");
+                audioElement.setAttribute("src", "Assets/pokemon.mp3");
+                audioElement.play();
+                audioElement.setAttribute("src", "Assets/whosthatpokemon.mp3");
+            }
+        }
+        $("#display").append(fridgeMagnet);
+      })
+      // Inside the loop...
+      $("#clear").on("click", function () {
+          $("#display").empty()
+      });
+    });
+      // 2. Create a variable named "letterBtn" equal to $("<button>");
+
+      // 3. Then give each "letterBtn" the following classes: "letter-button" "letter" "letter-button-color".
+
+      // 4. Then give each "letterBtn" a data-attribute called "data-letter", with a value eqaual to "letters[i]"
+
+      // 5. Then give each "letterBtn" a text equal to "letters[i]".
+
+      // 6. Finally, append each "letterBtn" to the "#buttons" div (provided).
+
+      // Be sure to test that your code works for this major task, before proceeding to the next one!
+
+      // MAJOR TASK #2: ATTACH ON-CLICK EVENTS TO "LETTER" BUTTONS
+      // =================================================================================
+
+      // 7. Create an "on-click" event attached to the ".letter-button" class.
+
+      // Inside the on-click event...
+
+      // 8. Create a variable called "fridgeMagnet" and set the variable equal to a new div.
+
+      // 9. Give each "fridgeMagnet" the following classes: "letter fridge-color".
+
+      // 10. Then chain the following code onto the "fridgeMagnet" variable: .text($(this).attr("data-letter"))
+
+      // 11. Lastly append the fridgeMagnet variable to the "#display" div (provided);
+
+      // Be sure to test that your code works for this major task, before proceeding to the next one!
+
+      // MAJOR TASK #3: ATTACH ON-CLICK EVENTS TO "CLEAR" BUTTON
+      // =================================================================================
+
+      // 12. Create an "on-click" event attached to the "#clear" button id.
+
+      // Inside the on-click event...
+
+      // 13. Use the jQuery "empty()" method to clear the contents of the "#display" div.
+
+  </script>
+</body>
+
+</html>
