@@ -163,6 +163,7 @@
         var imgSrc = '../Assets/';
         imgSrc += wordbank[wordIndex];
         imgSrc += '.png';
+        imgSrc = imgSrc.toLowerCase();
         $("#pokemon").attr('src', imgSrc);
         $("#mysteryword").text(activeGuess);
       });
