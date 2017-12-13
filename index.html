@@ -161,9 +161,8 @@
         }
           console.log(activeGuess.join(""));
         var imgSrc = '../Assets/';
-        imgSrc += wordbank[wordIndex];
+        imgSrc += wordbank[wordIndex].toLowerCase();
         imgSrc += '.png';
-        imgSrc = imgSrc.toLowerCase();
         $("#pokemon").attr('src', imgSrc);
         $("#mysteryword").text(activeGuess);
       });
