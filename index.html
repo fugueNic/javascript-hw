@@ -160,7 +160,7 @@
           activeGuess[i] = '?';
         }
           console.log(activeGuess.join(""));
-        var imgSrc = '../Assets/';
+        var imgSrc = 'Assets/';
         imgSrc += wordbank[wordIndex].toLowerCase();
         imgSrc += '.png';
         $("#pokemon").attr('src', imgSrc);
@@ -220,10 +220,35 @@
               }
               $("#mysteryword").text(activeGuess);
               if (activeGuess.join("") === wordArray.join("")) {
-                  alert("YOU WIN!");
+                  alert("YOU WIN!!")
+                  wins++;
+                  $("#wins").text(wins);
+                  console.log(audioElement.attributes);
                   audioElement.setAttribute("src", "Assets/pokemon.mp3");
                   audioElement.play();
+                  audio.addEventListener(setTimeout(audioElement.pause(), 10000));
+                   console.log(audioElement.attributes);
                   audioElement.setAttribute("src", "Assets/whosthatpokemon.mp3");
+                  audioElement.play();
+                  guessesLeft = 15;
+                  guessedLetters = [];
+                  fridgeMagnet.text("");
+                  $("#display").empty()
+                  $("#guesses").text(guessesLeft);
+                  wordIndex = Math.floor((Math.random() * wordbank.length + 0));
+                  wordArray = wordbank[wordIndex].split('');
+                  console.log(wordArray);
+                  activeGuess = wordArray.slice(0);
+                  //activeGuess = wordArray;
+                  for (var i = 0; i < activeGuess.length; i++) {
+                    activeGuess[i] = '?';
+                  }
+                  console.log(activeGuess.join(""));
+                  var imgSrc = 'Assets/';
+                  imgSrc += wordbank[wordIndex].toLowerCase();
+                  imgSrc += '.png';
+                  $("#pokemon").attr('src', imgSrc);
+                  $("#mysteryword").text(activeGuess);
               }
           }
           $("#display").append(fridgeMagnet);
