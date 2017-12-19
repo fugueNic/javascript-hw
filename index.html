@@ -226,10 +226,11 @@
                   console.log(audioElement.attributes);
                   audioElement.setAttribute("src", "Assets/pokemon.mp3");
                   audioElement.play();
-                  audio.addEventListener(setTimeout(audioElement.pause(), 10000));
-                   console.log(audioElement.attributes);
-                  audioElement.setAttribute("src", "Assets/whosthatpokemon.mp3");
-                  audioElement.play();
+                  setTimeout(function () {
+                      audioElement.pause();
+                      audioElement.setAttribute("src", "Assets/whosthatpokemon.mp3");
+                      audioElement.play();
+                  }, 10000);
                   guessesLeft = 15;
                   guessedLetters = [];
                   fridgeMagnet.text("");
